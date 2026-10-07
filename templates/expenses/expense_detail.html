@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}{{ expense.name }}{% endblock %}
+{% block content %}
+<div class="detail-card">
+    <div class="page-head">
+        <div>
+            <p class="muted">Расход</p>
+            <h1>{{ expense.name }}</h1>
+        </div>
+        <strong class="big-amount">{{ expense.amount|floatformat:2 }} ₼</strong>
+    </div>
+    <dl class="details">
+        <div><dt>Категория</dt><dd>{{ expense.get_category_display }}</dd></div>
+        <div><dt>Способ оплаты</dt><dd>{{ expense.get_payment_method_display }}</dd></div>
+        <div><dt>Дата расхода</dt><dd>{{ expense.expense_date|date:'d.m.Y' }}</dd></div>
+        <div><dt>Создано</dt><dd>{{ expense.created_at|date:'d.m.Y H:i' }}</dd></div>
+        <div><dt>Комментарий</dt><dd>{{ expense.comment|default:'—'|linebreaksbr }}</dd></div>
+    </dl>
+    <div class="actions">
+        <a class="button" href="{% url 'expense_update' expense.pk %}">Редактировать</a>
+        <a class="button danger" href="{% url 'expense_delete' expense.pk %}">Удалить</a>
+        <a class="button secondary" href="{% url 'expense_list' %}">Назад</a>
+    </div>
+</div>
+{% endblock %}

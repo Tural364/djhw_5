@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Удаление расхода{% endblock %}
+{% block content %}
+<div class="form-card narrow">
+    <h1>Удалить расход?</h1>
+    <p>Вы действительно хотите удалить «{{ expense.name }}» на сумму {{ expense.amount|floatformat:2 }} ₼?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="actions">
+            <button class="button danger" type="submit">Да, удалить</button>
+            <a class="button secondary" href="{% url 'expense_detail' expense.pk %}">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

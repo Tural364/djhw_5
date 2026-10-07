@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Мои расходы{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Мои расходы</h1>
+        <p class="muted">Управляйте своими расходами и контролируйте общую сумму.</p>
+    </div>
+    <a class="button" href="{% url 'expense_create' %}">+ Добавить расход</a>
+</div>
+
+<form method="get" class="filters">
+    <div class="field">
+        <label for="q">Поиск</label>
+        <input id="q" type="text" name="q" value="{{ filters.q }}" placeholder="Название расхода">
+    </div>
+    <div class="field">
+        <label for="category">Категория</label>
+        <select id="category" name="category">
+            <option value="">Все категории</option>
+            {% for value, label in categories %}
+                <option value="{{ value }}" {% if filters.category == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="field">
+        <label for="payment_method">Оплата</label>
+        <select id="payment_method" name="payment_method">
+            <option value="">Любой способ</option>
+            {% for value, label in payment_methods %}
+                <option value="{{ value }}" {% if filters.payment_method == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="field">
+        <label for="date_from">Дата от</label>
+        <input id="date_from" type="date" name="date_from" value="{{ filters.date_from }}">
+    </div>
+    <div class="field">
+        <label for="date_to">Дата до</label>
+        <input id="date_to" type="date" name="date_to" value="{{ filters.date_to }}">
+    </div>
+    <div class="filter-actions">
+        <button class="button" type="submit">Применить</button>
+        <a class="button secondary" href="{% url 'expense_list' %}">Сбросить</a>
+    </div>
+</form>
+
+<div class="summary">
+    <div><span>Найдено записей</span><strong>{{ count }}</strong></div>
+    <div><span>Общая сумма</span><strong>{{ total_amount|floatformat:2 }} ₼</strong></div>
+</div>
+
+{% if expenses %}
+    <div class="expense-list">
+        {% for expense in expenses %}
+            <article class="expense-card">
+                <div>
+                    <h2><a href="{% url 'expense_detail' expense.pk %}">{{ expense.name }}</a></h2>
+                    <div class="tags">
+                        <span>{{ expense.get_category_display }}</span>
+                        <span>{{ expense.get_payment_method_display }}</span>
+                        <span>{{ expense.expense_date|date:'d.m.Y' }}</span>
+                    </div>
+                </div>
+                <strong class="amount">{{ expense.amount|floatformat:2 }} ₼</strong>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty">
+        <h2>Расходов не найдено</h2>
+        <p>Попробуйте изменить фильтры или добавьте первый расход.</p>
+        <a class="button" href="{% url 'expense_create' %}">Добавить расход</a>
+    </div>
+{% endif %}
+{% endblock %}
